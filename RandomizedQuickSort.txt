@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int partition(int arr[], int start, int end, int &comp)
+{
+    int lowerBound = start;
+
+    int pivot = arr[start];
+    int temp;
+    while (start <= end)
+    {
+        while ((comp = comp + 1) && arr[start] <= pivot)
+            start++;
+        while ((comp = comp + 1) && arr[end] > pivot)
+            end--;
+
+        if (start < end)
+        {
+            temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+
+            start++;
+            end--;
+        }
+    }
+
+    temp = arr[end];
+    arr[end] = arr[lowerBound];
+    arr[lowerBound] = temp;
+
+    return end;
+}
+
+// Random partition  func to swap arr[random] with arr[start]
+int RandomPartition(int arr[], int start, int end, int &comp)
+{
+    int temp = 0;
+
+    int random = start + rand() % (end - start);
+
+    // swap arr[random] with arr[start] since we take first element as pivot
+    temp = arr[random];
+    arr[start] = arr[random];
+    arr[random] = temp;
+
+    return partition(arr, start, end, comp);
+}
+
+// function to divide the array
+
+int Quick(int arr[], int start, int end, int &comp)
+{
+    if (start < end)
+    {
+        int fix = RandomPartition(arr, start, end, comp);
+        Quick(arr, start, fix - 1, comp);
+        Quick(arr, fix + 1, end, comp);
+    }
+
+    return comp;
+}
+
+// For generating Random array
+
+void generate_random_array(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = (rand() % 1000);
+    }
+}
+
+// Average Case
+
+void quick_random_avg_case(int num_cases = 100, int min_size = 30, int max_size = 1000)
+{
+    int interval = (max_size - min_size) / num_cases;
+    for (int size = min_size, i = 0; i < num_cases; i++, size += interval)
+    {
+        int *Arr = new int[size];
+        generate_random_array(Arr, size);
+
+        fstream fout1;
+        int comp = 0;
+        Quick(Arr, 0, size - 1, comp);
+
+        cout << size << "," << comp << endl;
+        // fout1.open("Quick_Random_Average.csv", ios::out | ios::app);
+        // fout1 << size << "," << comp << endl;
+        comp = 0;
+    }
+}
+
+// Main function
+int main()
+{
+    quick_random_avg_case();
+
+    return 0;
+}

@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// insertion sort function
+void insertion_Sort(vector<double> &V)
+{
+    for (auto it = V.begin(); it != V.end(); it++)
+    {
+        auto const insertion_point =
+            upper_bound(V.begin(), it, *it);
+        rotate(insertion_point, it, it + 1);
+    }
+}
+
+// display vector
+void print_Vector(vector<double> g)
+{
+    vector<double>::iterator it;
+    for (it = g.begin(); it != g.end(); ++it)
+        cout << *it << "\t";
+}
+
+// Bucket sort function
+void Bucket_Sort(double arr[], int n)
+{
+    vector<double> bucket[n];
+
+    for (int i = 0; i < n; i++)
+    {
+        int bucket_num = int(n * arr[i]);
+        bucket[bucket_num].push_back(arr[i]); // storing the number in its respective bucket
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        if (!(bucket[i].empty()))
+        {
+            insertion_Sort(bucket[i]); // sort by using insertion Sort
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        if (!(bucket[i].empty()))
+        {
+            print_Vector(bucket[i]);
+        }
+    }
+}
+
+// Main function(Driver Code)
+int main()
+{
+    double arr[] = {0.23, 0.12, 0.34, 0.67, 0.11, 0.1, 0.23, 0.56, 0.88, 0.99};
+    int len = sizeof(arr) / sizeof(arr[0]);
+    Bucket_Sort(arr, len);
+    return 0;
+}

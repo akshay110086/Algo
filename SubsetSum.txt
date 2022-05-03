@@ -1,0 +1,107 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool **dp;
+
+void display(const vector<int> &v)
+{
+    for (int i = 0; i < v.size(); ++i)
+        cout << v[i] << " ";
+    cout << endl;
+}
+
+// A recursive function to print all subsets with the
+// help of dp[][]. Vector p[] stores current subset.
+void printSubsetsRec(int arr[], int i, int sum, vector<int> &v)
+{
+    // If we reached end and sum is non-zero. We print
+    // p[] only if arr[0] is equal to sum OR dp[0][sum]
+    // is true.
+    int count = 0, max = 0;
+    if (i == 0 && sum != 0 && dp[0][sum])
+    {
+        v.push_back(arr[i]);
+        // Display Only when Sum of elements of p is equal to sum
+        if (arr[i] == sum)
+        {
+            display(v);
+        }
+        return;
+    }
+
+    // If sum becomes 0
+    if (i == 0 && sum == 0)
+    {
+        display(v);
+        return;
+    }
+
+    // If given sum can be achieved after ignoring
+    // current element.
+    if (dp[i - 1][sum])
+    {
+        // Create a new vector to store path
+        vector<int> b = v;
+        printSubsetsRec(arr, i - 1, sum, b);
+    }
+
+    // If given sum can be achieved after considering
+    // current element.
+    if (sum >= arr[i] && dp[i - 1][sum - arr[i]])
+    {
+        v.push_back(arr[i]);
+        printSubsetsRec(arr, i - 1, sum - arr[i], v);
+    }
+}
+
+// Prints all subsets of arr[0..n-1] with sum 0.
+bool IsSubsets(int arr[], int n, int sum)
+{
+    if (n == 0 || sum < 0)
+        return false;
+
+    // Sum 0 can always be achieved with 0 elements
+    dp = new bool *[n];
+    for (int i = 0; i < n; ++i)
+    {
+        dp[i] = new bool[sum + 1];
+        dp[i][0] = true;
+    }
+
+    // Sum arr[0] can be achieved with single element
+    if (arr[0] <= sum)
+        dp[0][arr[0]] = true;
+
+    // Fill rest of the entries in dp[][]
+    for (int i = 1; i < n; ++i)
+        for (int j = 0; j < sum + 1; ++j)
+            dp[i][j] = (arr[i] <= j) ? dp[i - 1][j] ||
+                                           dp[i - 1][j - arr[i]]
+                                     : dp[i - 1][j];
+    if (dp[n - 1][sum] == false)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// Main function (Driver code)
+int main()
+{
+    int arr[] = {1, 2, 3, 4, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int sum = 10;
+
+    if (IsSubsets(arr, n, sum))
+    {
+        // Now recursively traverse dp[][] to find all
+        // paths from dp[n-1][sum]
+        vector<int> v;
+        printSubsetsRec(arr, n - 1, sum, v);
+    }
+    else
+        cout << "There is no subset with sum : " << sum << endl;
+
+    return 0;
+}

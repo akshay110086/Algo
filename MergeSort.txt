@@ -1,0 +1,112 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// merge() function
+void merge(int arr[], int l, int mid, int r, int &comparisons)
+{
+
+    int len1 = 0;
+    int len2 = 0;
+
+    len1 = mid - l + 1;
+    len2 = r - mid;
+
+    int arr1[len1] = {0};
+    int arr2[len2] = {0};
+
+    for (int i = 0; i < len1; i++)
+    {
+        arr1[i] = arr[i + l];
+    }
+
+    for (int k = 0; k < len2; k++)
+    {
+        arr2[k] = arr[k + mid + 1];
+    }
+
+    int i = 0, j = 0, k = l;
+
+    while (i < len1 && j < len2)
+    {
+        if (arr1[i] > arr2[j])
+        {
+            arr[k] = arr2[j];
+            j++;
+            k++;
+        }
+        else if (arr1[i] < arr2[j])
+        {
+            arr[k] = arr1[i];
+            i++;
+            k++;
+        }
+        else if (arr1[i] == arr2[j])
+        {
+            arr[k] = arr1[i];
+            i++;
+            j++;
+            k++;
+        }
+        comparisons++;
+    }
+
+    while (i < len1)
+    {
+        arr[k] = arr1[i];
+        i++;
+        k++;
+    }
+
+    while (j < len2)
+    {
+        arr[k] = arr2[j];
+        j++;
+        k++;
+    }
+}
+
+// Merge Sort
+void mergeSort(int arr[], int l, int r, int &comparisons)
+{
+    if (l < r)
+    {
+        int c = 0;
+        int mid = (l + r) / 2;
+        mergeSort(arr, l, mid, comparisons);
+        mergeSort(arr, mid + 1, r, comparisons);
+        merge(arr, l, mid, r, comparisons);
+    }
+}
+
+// generate random array
+void generate_RandomArray(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = (rand() % 100);
+    }
+}
+
+// Main function(Driver Code)
+int main()
+{
+    int start = 30;
+    int end = 1000;
+    int comparisons = 0;
+    int interval = (end - start) / 100;
+    int count = 0;
+    for (int i = start; i < end && count < 100; i += interval)
+    {
+        fstream fout;
+        int *Arr = new int[i];
+        generate_RandomArray(Arr, i);
+        mergeSort(Arr, 0, i - 1, comparisons);
+
+        // fout.open("MergeSort_Comparisons.csv", ios::out | ios::app);
+        // fout << i << "," << comparisons << endl;
+        cout << i << "," << comparisons << endl;
+        comparisons = 0;
+        count++;
+    }
+    return 0;
+}

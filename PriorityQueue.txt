@@ -1,0 +1,166 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+// function to print priority queue
+void PRINT(int arr[], int size)
+{
+    cout << endl;
+    for (int i = 0; i < size; i++)
+        cout << arr[i] << "  ";
+
+    cout << endl;
+}
+
+// MAX_HEAPIFY FUNCTION
+void HeapifyIt(int arr[], int n, int i)
+{
+
+    int largest = i;
+
+    int l = i * 2 + 1;   // left child
+    int r = (i * 2) + 2; // right child
+
+    if (l < n && (arr[l] > arr[largest]))
+    {
+        largest = l;
+    }
+
+    if (r < n && (arr[r] > arr[largest]))
+    {
+        largest = r;
+    }
+
+    if (largest != i) // if largest is not the same
+    {
+
+        swap(arr[i], arr[largest]); // Inbuilt swap func
+
+        HeapifyIt(arr, n, largest); // call again for smaller tree
+    }
+}
+
+// function to find proper place for newly increased key
+void INCREASE_VAL(int arr[], int key, int index)
+{
+    if (key < arr[index])
+        cout << "can't insert";
+    else
+    {
+        arr[index] = key;
+        while (index > 0 and arr[index] > arr[(index - 1) / 2])
+        {
+            swap(arr[index], arr[(index - 1) / 2]);
+            index = (index - 1) / 2;
+        }
+    }
+}
+
+// function to get max priority
+int GET_MAXIMUM(int arr[], int size)
+{
+    if (size == 0)
+    {
+        cout << "QUEUE IS EMPTY" << endl;
+        return 0;
+    }
+
+    else
+        return arr[0];
+}
+
+// function to extract key according to priority
+int EXTRACT_MAX(int arr[], int &size)
+{
+    if (size == 0)
+    {
+        cout << "QUEUE IS EMPTY" << endl;
+        return 0;
+    }
+    else
+    {
+        int max = arr[0];
+        swap(arr[0], arr[size - 1]);
+        size = size - 1;
+
+        HeapifyIt(arr, size, 0);
+
+        return max;
+    }
+}
+
+// function to insert key priority
+void MAX_INSERT(int arr[], int &size)
+{
+    int key = 0;
+    arr[size] = -1; // Assuming that priority is always > 0
+    size++;
+    cout << "Enter the priority : ";
+    cin >> key;
+    INCREASE_VAL(arr, key, size - 1);
+}
+
+// Main function(Driver Code)
+int main()
+{
+    int arr[10000];
+    int size = 0;
+    int p = 0, i = 0;
+    int len = 0;
+    int choice;
+
+    do
+    {
+        cout << endl
+             << "MENU-DRIVEN PROGRAM FOR PRIORITY QUEUE" << endl;
+        cout << endl
+             << "(1) FOR INSERT" << endl;
+        cout << endl
+             << "(2) FOR GET MAX" << endl;
+        cout << endl
+             << "(3) FOR EXTRACT MAX" << endl;
+        cout << endl
+             << "(4) FOR INCREASE" << endl;
+        cout << endl
+             << "(5) FOR PRINT QUEUE" << endl;
+
+        cout << "\nEnter your choice : ";
+        cin >> choice;
+
+        switch (choice)
+        {
+        case 1:
+            MAX_INSERT(arr, size);
+            break;
+        case 2:
+            cout << endl
+                 << "MAXIMUM PRIORITY :" << GET_MAXIMUM(arr, size) << endl;
+            break;
+
+        case 3:
+            cout << endl
+                 << size << endl;
+            cout << endl
+                 << "EXTRACTED ELEMENT PRIORITY : " << EXTRACT_MAX(arr, size) << endl;
+            break;
+
+        case 4:
+            cout << "Enter new priority : ";
+            cin >> p;
+            cout << endl
+                 << "Enter index whose priority you want to change : ";
+            cin >> i;
+            INCREASE_VAL(arr, p, i);
+            break;
+        case 5:
+            PRINT(arr, size);
+            break;
+
+        default:
+            cout << "INVALID CASE , TRY AGAIN !!!!";
+        }
+
+    } while (choice >= 0);
+
+    return 0;
+}

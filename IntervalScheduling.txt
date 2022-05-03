@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Main function(Driver Code)
+int main()
+{
+    // Job count
+    int jobCount = 5;
+
+    // Job start times
+    int startTimes[] = {1, 2, 3, 4, 5};
+
+    // Job end times
+    int endTimes[] = {3, 4, 5, 6, 7};
+
+    vector<pair<int, int>> jobs;
+
+    for (int i = 0; i < jobCount; ++i)
+        jobs.push_back(make_pair(startTimes[i], endTimes[i]));
+
+    // step 1: sort
+    sort(jobs.begin(), jobs.end(), [](pair<int, int> p1, pair<int, int> p2)
+         { return p1.second < p2.second; });
+
+    // step 2: empty set A
+    vector<int> V;
+
+    // step 3:
+    for (int i = 0; i < jobCount; ++i)
+    {
+        auto job = jobs[i];
+        bool isCompatible = true;
+
+        for (auto jobIndex : V)
+        {
+            // test whether the actual job and the job from vector V are incompatible
+            if (job.second > jobs[jobIndex].first &&
+                job.first < jobs[jobIndex].second)
+            {
+                isCompatible = false;
+                break;
+            }
+        }
+
+        if (isCompatible)
+            V.push_back(i);
+    }
+
+    // step 4: print vector V
+    cout << "Compatible Scheduled Jobs : ";
+
+    for (auto i : V)
+        cout << "[" << jobs[i].first << "," << jobs[i].second << "] ";
+    cout << endl;
+
+    return 0;
+}

@@ -1,0 +1,80 @@
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+
+using namespace std;
+
+void print(int arr[], int n)
+{
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
+
+int partition(int arr[], int p, int r)
+{
+    int lowerBound = p;
+    int pivot = arr[p];
+
+    while (p <= r)
+    {
+        while (arr[p] <= pivot)
+            p++;
+        while (arr[r] > pivot)
+            r--;
+
+        if (p < r)
+        {
+
+            swap(arr[p], arr[r]);
+            p++;
+            r--;
+        }
+    }
+    swap(arr[lowerBound], arr[r]);
+
+    return r;
+}
+
+// Random partition  function
+int Randomized_Partition(int arr[], int p, int r)
+{
+    int random = p + rand() % (r - p);
+    swap(arr[random], arr[p]);
+    return partition(arr, p, r);
+}
+
+// function to randomizely select the array
+int Randomized_Select(int arr[], int p, int r, int i)
+{
+    if (p == r)
+    {
+        return arr[p];
+    }
+
+    int q = Randomized_Partition(arr, p, r); // To get randomized pivot position
+    int k = q - p + 1;                       // Add 1 for pivot element
+
+    if (i == k)
+        return arr[q];
+    else if (i < k)
+        return Randomized_Select(arr, p, q - 1, i);
+    else
+        return Randomized_Select(arr, q + 1, r, i - k);
+}
+
+// Main function(Driver Code)
+int main()
+{
+    int arr[] = {3, 8, 1, 0, 2, 9, 67};
+    int start = 0, end = sizeof(arr) / sizeof(arr[0]);
+    int index = 3;
+    int positional_element = Randomized_Select(arr, start, end - 1, index);
+    for (int i = 0; i < end; i++)
+    {
+        cout << arr[i] << " ";
+    }
+    cout << endl
+         << positional_element << endl;
+    return 0;
+}

@@ -1,0 +1,106 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int partition(int arr[], int s, int e, int &comp)
+{
+    int x = s;
+
+    int pivot = arr[s];
+    int temp;
+    while (s <= e)
+    {
+        while ((comp = comp + 1) && arr[s] <= pivot)
+            s++;
+        while ((comp = comp + 1) && arr[e] > pivot)
+            e--;
+
+        if (s < e)
+        {
+            temp = arr[s];
+            arr[s] = arr[e];
+            arr[e] = temp;
+
+            s++;
+            e--;
+        }
+    }
+
+    temp = arr[e];
+    arr[e] = arr[x];
+    arr[x] = temp;
+
+    return e;
+}
+
+int Quick_Sort(int arr[], int s, int e, int &comp)
+{
+    if (s < e)
+    {
+        int fix = partition(arr, s, e, comp);
+        Quick_Sort(arr, s, fix - 1, comp);
+        Quick_Sort(arr, fix + 1, e, comp);
+    }
+
+    return comp;
+}
+
+void generate_random_array(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        arr[i] = (rand() % 1000);
+    }
+}
+
+void quick_avg_case(int num_cases = 60, int min_size = 30, int max_size = 1000)
+{
+    int interval = (max_size - min_size) / num_cases;
+    for (int size = min_size, i = 0; i < num_cases; i++, size += interval)
+    {
+        int *Arr = new int[size];
+        generate_random_array(Arr, size);
+
+        fstream fout1;
+        int comp = 0;
+        Quick_Sort(Arr, 0, size - 1, comp);
+
+        cout << size << "," << comp << endl;
+        // fout1.open("QuickSort_Average.csv", ios::out | ios::app);
+        // fout1 << size << "," << comp << endl;
+        comp = 0;
+    }
+}
+
+void quick_Worst_case(int num_cases = 40, int min_size = 30, int max_size = 500)
+{
+    int interval = (max_size - min_size) / num_cases;
+    for (int size = min_size, i = 0; i < num_cases; i++, size += interval)
+    {
+        int *Arr = new int[size];
+        generate_random_array(Arr, size);
+
+        if (i % 2 == 0)
+            sort(Arr, Arr + size, greater<int>()); // sort the array in decreasing order if i is even
+
+        else
+            sort(Arr, Arr + size); // sort the array in increasing order  if i is odd
+
+        fstream fout1;
+        int comp = 0;
+        Quick_Sort(Arr, 0, size - 1, comp);
+
+        cout << size << "," << comp << endl;
+        // fout1.open("QuickSort_Worst.csv", ios::out | ios::app);
+        // fout1 << size << "," << comp << endl;
+        comp = 0;
+    }
+}
+
+// Main function(Driver Code)
+int main()
+{
+    quick_avg_case();
+    quick_Worst_case();
+
+    return 0;
+}
